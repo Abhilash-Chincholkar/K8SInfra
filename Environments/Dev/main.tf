@@ -18,12 +18,12 @@ module "storage_container" {
       storage_account_id    = module.storage_account.stg_account_id["stg1"]
       container_access_type = "private"
     }
-    container2 = {
-      name                  = "terraform-state"
-      storage_account_id    = module.storage_account.stg_account_id["stg2"]
-      container_access_type = "private"
-    }
-  }
+  #   container2 = {
+  #     name                  = "terraform-state"
+  #     storage_account_id    = module.storage_account.stg_account_id["stg2"]
+  #     container_access_type = "private"
+  #   }
+   }
 }
 
 
