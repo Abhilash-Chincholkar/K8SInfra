@@ -1,9 +1,7 @@
-output "stg_account_id" {
-  value = { for key,stg in azurerm_storage_account.storage_account: key => stg.id }
-  description = "stg account id"
-}
-
-output "stg_account_name" {
-  value       = { for key, stg in azurerm_storage_account.storage_account : key => stg.name }
-  description = "Map of storage account names"
+output "subnet_ids" {
+  description = "Map of subnet IDs per VNet"
+  value = {
+    for vnet_key, vnet in azurerm_virtual_network.virtual_network :
+    vnet_key => [for sn in vnet.subnet : sn.id]
+  }
 }
