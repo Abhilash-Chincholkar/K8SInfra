@@ -18,12 +18,12 @@ module "storage_container" {
       storage_account_id    = module.storage_account.stg_account_id["stg1"]
       container_access_type = "private"
     }
-  #   container2 = {
-  #     name                  = "terraform-state"
-  #     storage_account_id    = module.storage_account.stg_account_id["stg2"]
-  #     container_access_type = "private"
-  #   }
-   }
+    #   container2 = {
+    #     name                  = "terraform-state"
+    #     storage_account_id    = module.storage_account.stg_account_id["stg2"]
+    #     container_access_type = "private"
+    #   }
+  }
 }
 
 
@@ -42,14 +42,20 @@ module "aks" {
 }
 
 module "sql_server" {
-    source = "../../Modules/Azurerm_SQL_Server"
-    depends_on = [ module.resource_group ]
-    sql_servers = var.sql_servers
+  source      = "../../Modules/Azurerm_SQL_Server"
+  depends_on  = [module.resource_group]
+  sql_servers = var.sql_servers
 }
 
 module "sql_database" {
-    source = "../../Modules/Azurerm_SQL_Database"
-    depends_on = [ module.sql_server ]
-    sql_dbs = var.sql_dbs
-    server_id = module.sql_server.sql_server_id["sql_server1"]
+  source     = "../../Modules/Azurerm_SQL_Database"
+  depends_on = [module.sql_server]
+  sql_dbs    = var.sql_dbs
+  server_id  = module.sql_server.sql_server_id["sql_server1"]
+}
+
+module "public_ip" {
+  source     = "../../Modules/Azurerm_Public_IP"
+  depends_on = [module.resource_group]
+  pips       = var.pips
 }
