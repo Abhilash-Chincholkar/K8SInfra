@@ -59,3 +59,9 @@ module "public_ip" {
   depends_on = [module.resource_group]
   pips       = var.pips
 }
+
+module "key_vault" {
+  source     = "../../Modules/Azurerm_Keyvault"
+  depends_on = [module.resource_group]
+  keyvaults  = var.keyvaults
+}
