@@ -65,3 +65,9 @@ module "key_vault" {
   depends_on = [module.resource_group]
   keyvaults  = var.keyvaults
 }
+
+module "virtual_networks" {
+  source = "../../Modules/Azurerm_Virtual_Network"
+  depends_on = [ module.resource_group ]
+  virtual_network = var.virtual_network
+}
