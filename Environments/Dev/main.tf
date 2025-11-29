@@ -71,3 +71,9 @@ module "virtual_networks" {
   depends_on = [ module.resource_group ]
   virtual_network = var.virtual_network
 }
+
+module "agw" {
+  source = "../../Modules/Azurerm_Application_Gateway"
+  depends_on = [ module.virtual_networks, module.aks, module.public_ip ]
+  agw = var.agw
+}

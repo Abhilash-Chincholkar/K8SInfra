@@ -120,3 +120,57 @@ variable "virtual_network" {
     tags = map(string)
   }))
 }
+
+variable "agw" {
+  type = map(object({
+    agw_name             = string
+    resource_group_name  = string
+    location             = string
+    subnet_name          = string
+    virtual_network_name = string
+    public_ip_name       = string
+    sku_name             = string
+    tier                 = string
+    capacity             = number
+    gateway_ip_configuration = object({
+      name = string
+    })
+    frontend_ip_configurations = list(object({
+      name = string
+
+    }))
+    frontend_ports = list(object({
+      name = string
+      port = number
+    }))
+    backend_address_pools = list(object({
+      name = string
+    }))
+    backend_http_settings = list(object({
+      name                  = string
+      port                  = number
+      protocol              = string
+      cookie_based_affinity = string
+      request_timeout       = number
+    }))
+
+    # http listeners
+    http_listeners = list(object({
+      name                           = string
+      frontend_ip_configuration_name = string
+      frontend_port_name             = string
+      protocol                       = string
+    }))
+
+    # routing rules
+    request_routing_rules = list(object({
+      name                       = string
+      rule_type                  = string
+      http_listener_name         = string
+      backend_address_pool_name  = string
+      backend_http_settings_name = string
+    }))
+  }))
+}
+
+

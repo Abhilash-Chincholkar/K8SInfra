@@ -1,53 +1,74 @@
+
+
 resource "azurerm_application_gateway" "agw" {
   for_each = var.agw
   name                = each.value.agw_name
   resource_group_name = each.value.resource_group_name
   location            = each.value.location
   sku {
-    name     = "WAF_v2"
-    tier     = "WAF_v2"
-    capacity = 2
+    name     = each.value.sku_name
+    tier     = each.value.tier
+    capacity = each.value.capacity
   }
 
   gateway_ip_configuration {
-    name      = "appgw-ip-config"
-    subnet_id = each.value.appgw_subnet_id
+    name      = each.value.gateway_ip_configuration.name
+    subnet_id = data.azurerm_subnet.datasubnet[each.key].id
+    }
+
+  dynamic "frontend_ip_configuration" {
+    for_each = each.value.frontend_ip_configurations
+    content {
+    name                 = frontend_ip_configuration.value.name
+    public_ip_address_id = data.azurerm_public_ip.datapublic_ip[each.key].id
+    }
   }
 
-  frontend_ip_configuration {
-    name                 = "frontendPIP"
-    public_ip_address_id = data.
+  dynamic "frontend_port" {
+    for_each = each.value.frontend_ports
+    content {
+    name = frontend_port.value.name
+    port = frontend_port.value.port
+    }
   }
 
-  frontend_port {
-    name = "frontendPort"
-    port = 80
+ dynamic "backend_address_pool" {
+  for_each = each.value.backend_address_pools
+  content {
+    name = backend_address_pool.value.name
+  }
+    
   }
 
-  backend_address_pool {
-    name = "defaultpool"
+  dynamic "backend_http_settings" {
+    for_each = each.value.backend_http_settings
+    content {
+    name                  = backend_http_settings.value.name
+    port                  = backend_http_settings.value.port
+    protocol              = backend_http_settings.value.protocol
+    cookie_based_affinity = backend_http_settings.value.cookie_based_affinity
+    request_timeout       = backend_http_settings.value.request_timeout
+    }
   }
 
-  backend_http_settings {
-    name                  = "defaultSetting"
-    port                  = 80
-    protocol              = "Http"
-    cookie_based_affinity = "Disabled"
-    request_timeout       = 30
+  dynamic "http_listener" {
+    for_each = each.value.http_listeners
+    content {
+    name                           = http_listener.value.name
+    frontend_ip_configuration_name = http_listener.value.frontend_ip_configuration_name
+    frontend_port_name             = http_listener.value.frontend_port_name
+    protocol                       = http_listener.value.protocol
+    }
   }
 
-  http_listener {
-    name                           = "listener"
-    frontend_ip_configuration_name = "frontendPIP"
-    frontend_port_name             = "frontendPort"
-    protocol                       = "Http"
-  }
-
-  request_routing_rule {
-    name                       = "rule1"
-    rule_type                  = "Basic"
-    http_listener_name         = "listener"
-    backend_address_pool_name  = "defaultpool"
-    backend_http_settings_name = "defaultSetting"
+ dynamic "request_routing_rule" {
+  for_each = each.value.request_routing_rules
+  content {
+    name                       = request_routing_rule.value.name
+    rule_type                  = request_routing_rule.value.rule_type
+    http_listener_name         = request_routing_rule.value.http_listener_name
+    backend_address_pool_name  = request_routing_rule.value.backend_address_pool_name
+    backend_http_settings_name = request_routing_rule.value.backend_http_settings_name
   }
 }
+} 
