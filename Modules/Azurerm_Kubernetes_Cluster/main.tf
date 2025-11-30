@@ -19,9 +19,15 @@ resource "azurerm_kubernetes_cluster" "kubernetes_cluster" {
     content {
       type = identity.value.type
     }
-
   }
 
+  dynamic "ingress_application_gateway" {
+    for_each = var.application_gateway_id != "" ? [1] : []
+    content {
+      gateway_id = var.application_gateway_id
+    }
+  }
+  
   tags = each.value.tags
 }
 
@@ -33,4 +39,3 @@ resource "azurerm_role_assignment" "acr_pull" {
   scope                            = var.acr_id
   skip_service_principal_aad_check = true
 }
-

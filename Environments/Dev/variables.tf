@@ -85,7 +85,14 @@ variable "sql_dbs" {
     }
   ))
 }
-
+variable "keyvaults" {
+    type = map(object({
+        kv_name = string
+        location = string
+        resource_group_name = string
+        
+    }))
+}
 
 variable "pips" {
   type = map(object({
@@ -95,17 +102,8 @@ variable "pips" {
     allocation_method   = string
     tags                = optional(map(string))
   }))
-
 }
 
-variable "keyvaults" {
-  type = map(object({
-    kv_name             = string
-    location            = string
-    resource_group_name = string
-
-  }))
-}
 
 variable "virtual_network" {
   type = map(object({
@@ -169,8 +167,8 @@ variable "agw" {
       http_listener_name         = string
       backend_address_pool_name  = string
       backend_http_settings_name = string
+      priority                   = number
     }))
   }))
 }
-
 

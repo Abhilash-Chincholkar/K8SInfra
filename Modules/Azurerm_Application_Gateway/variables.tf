@@ -46,6 +46,7 @@ variable "agw" {
       http_listener_name         = string
       backend_address_pool_name  = string
       backend_http_settings_name = string
+      priority                   = number
     }))
   }))
 }

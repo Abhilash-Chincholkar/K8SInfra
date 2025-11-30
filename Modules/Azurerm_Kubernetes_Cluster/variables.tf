@@ -21,3 +21,8 @@ variable "acr_id" {
   type        = string
   description = "ACR resource ID to grant AKS pull access (e.g. /subscriptions/.../resourceGroups/.../providers/Microsoft.ContainerRegistry/registries/...)"
 }
+variable "application_gateway_id" {
+  type        = string
+  description = "(Optional) AGW resource ID for AGIC addon"
+  default     = ""
+}
